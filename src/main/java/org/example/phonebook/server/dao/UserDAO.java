@@ -25,7 +25,10 @@ public class UserDAO implements IUserAction {
 
     @Override
     public void updateUser(int id, String login, String phone) {
-        entityManager.merge(getUserById(id));
+        IUser user = getUserById(id);
+        user.setLogin(login);
+        user.setPhone(phone);
+        entityManager.merge(user);
     }
 
     @Override

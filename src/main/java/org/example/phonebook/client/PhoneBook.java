@@ -43,6 +43,7 @@ public class PhoneBook implements EntryPoint {
                 final int row = cell.getRowIndex();
                 final int column = cell.getCellIndex();
                 final TextBox textBox = new TextBox();
+                textBox.setText(flexTable.getText(row, column));
                 flexTable.setWidget(row, column, textBox);
                 textBox.setFocus(true);
                 textBox.addKeyDownHandler(new KeyDownHandler() {
@@ -50,16 +51,15 @@ public class PhoneBook implements EntryPoint {
                     public void onKeyDown(KeyDownEvent keyDownEvent) {
                         int code = keyDownEvent.getNativeKeyCode();
                         if (KeyCodes.KEY_ENTER == code) {
-                            final int rowIndex = flexTable.getCellForEvent(event).getRowIndex();
                             String login = null, phone = null;
                             if (column == 1) {
                                 login = textBox.getText();
-                                phone = flexTable.getText(rowIndex, 2);
+                                phone = flexTable.getText(row, 2);
                             } else if (column == 2) {
-                                login = flexTable.getText(rowIndex, 1);
+                                login = flexTable.getText(row, 1);
                                 phone = textBox.getText();
                             }
-                            userService.update(Integer.valueOf(flexTable.getText(rowIndex, 0)), login, phone, new AsyncCallback<Void>() {
+                            userService.update(Integer.valueOf(flexTable.getText(row, 0)), login, phone, new AsyncCallback<Void>() {
                                 @Override
                                 public void onFailure(Throwable throwable) {
                                     Window.alert("Unable to update user.");
