@@ -1,0 +1,14 @@
+*.class
+*.jar
+*.war
+*.ear
+*.swp
+*.iml
+*.impl
+*.db
+*.launch
+.idea/*
+.settings
+target/
+.project
+.classpath
