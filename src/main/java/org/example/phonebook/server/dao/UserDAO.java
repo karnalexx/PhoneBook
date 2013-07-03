@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -32,17 +33,18 @@ public class UserDAO implements IUserAction {
         entityManager.remove(getUserById(id));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<IUser> getAllUsers() {
-        TypedQuery<IUser> query = entityManager.createNamedQuery(User.QUERY_FIND_ALL, IUser.class);
+        Query query = entityManager.createQuery("SELECT u FROM User u");
         return query.getResultList();
     }
 
     @Override
     public IUser getUserByLogin(String login) {
-        TypedQuery<IUser> query = entityManager.createNamedQuery(User.QUERY_FIND_BY_LOGIN, IUser.class);
-        query.setParameter(User.PARAMETER_LOGIN, login);
-        return query.getSingleResult();
+        Query query = entityManager.createQuery("SELECT u FROM User u WHERE LOWER(u.login) = :login");
+        query.setParameter("login", login);
+        return (IUser) query.getSingleResult();
     }
 
     @Override
@@ -50,10 +52,12 @@ public class UserDAO implements IUserAction {
         return entityManager.find(User.class, id);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<IUser> findByKey(String key) {
-        TypedQuery<IUser> query = entityManager.createNamedQuery(User.QUERY_FIND_ALL_BY_KEY, IUser.class);
-        query.setParameter(User.PARAMETER_KEY, "%" + key + "%");
+        Query query = entityManager.createQuery("SELECT u FROM User u WHERE LOWER(u.login) LIKE :key"
+                                        + " OR LOWER(u.phone) LIKE :key");
+        query.setParameter("key", "%" + key + "%");
         return query.getResultList();
     }
 }
